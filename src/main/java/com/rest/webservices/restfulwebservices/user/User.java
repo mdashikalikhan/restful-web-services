@@ -8,9 +8,9 @@ import javax.validation.constraints.Size;
 
 public class User {
 	private Integer id;
-	@Size(min=3)
+	@Size(min=3, message="Name should have atleast 3 characters")
 	private String name;
-	@Past
+	@Past(message="BirthDate must be a past date")
 	private Date birthDate;
 	
 	protected User() {

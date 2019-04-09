@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,14 +28,36 @@ public class UserResource {
 		return service.findAll();
 	}
 	
-	
-	@GetMapping("/users/{id}")
+	/*@GetMapping("/users/{id}")
 	public User retrieveUser(@PathVariable int id) {	
 		User user = service.findOne(id);
 		if(user == null) {
 			throw new UserNotFoundException("User not found: id = " + id);
 		}
+		
+		
+		
 		return user;
+	}*/
+	
+	@GetMapping("/users/{id}")
+	public Resource<User> retrieveUser(@PathVariable int id) {	
+		User user = service.findOne(id);
+		if(user == null) {
+			throw new UserNotFoundException("User not found: id = " + id);
+		}
+		
+		//"all-users", SERVER_PATH + "/users"
+		//retrieveAllUsers
+		
+		Resource<User> resource = new Resource<User>(user);
+		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+
+		resource.add(linkTo.withRel("all-users"));
+		
+		//HATEOAS
+		
+		return resource;
 	}
 	
 	@DeleteMapping("/users/{id}")
